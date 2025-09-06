@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="title">Alive Lite – ترک تدریجی</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/192.png">
+  <meta name="theme-color" content="#12141a" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1 data-i18n="brand">Alive Lite</h1>
+      <p class="subtitle" data-i18n="subtitle">ترک تدریجی سیگار – ساخت خودت</p>
+    </div>
+    <div class="lang-switch">
+      <button id="langFa">FA</button>
+      <button id="langEn">EN</button>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <button data-tab="controls" class="tab-btn active" data-i18n="tab_controls">کنترل</button>
+    <button data-tab="stats" class="tab-btn" data-i18n="tab_dashboard">داشبورد</button>
+    <button data-tab="history" class="tab-btn" data-i18n="tab_history">تاریخچه</button>
+    <button data-tab="profile" class="tab-btn" data-i18n="tab_profile">پروفایل</button>
+  </nav>
+
+  <main id="app">
+    <section id="controls" class="card">
+      <div class="phase">
+        <span><span data-i18n="phase_label">فاز جاری</span>: <b id="phaseIndex">1</b></span>
+        <div class="phase-actions">
+          <button id="advancePhase" title="رفتن به فاز بعد" data-i18n="phase_next">ادامه به فاز بعد</button>
+          <button id="stayPhase" title="ماندن در فاز فعلی" data-i18n="phase_stay">فعلاً همین فاز</button>
+        </div>
+      </div>
+      <div class="timer">
+        <p><span data-i18n="target_interval">فاصله هدف</span>: <b id="targetInterval">—</b> <span data-i18n="minutes">دقیقه</span></p>
+        <p><span data-i18n="since_last">از آخرین سیگار</span>: <b id="elapsed">—</b> <span data-i18n="minutes">دقیقه</span></p>
+        <div class="countdown">
+          <span data-i18n="countdown_label">زمان باقی‌مانده</span>: <b id="countdown">—:—</b>
+        </div>
+        <div class="actions">
+          <button id="logBtn" data-i18n="btn_smoke">می‌خوام سیگار بکشم</button>
+          <button id="smokeAheadBtn" class="danger" data-i18n="btn_smoke_ahead">سیگار خارج از برنامه</button>
+        </div>
+        <p id="waitMsg" class="warn hidden" data-i18n="wait_msg">هنوز باید صبر کنی…</p>
+      </div>
+    </section>
+
+    <section id="stats" class="card hidden">
+      <h2 data-i18n="dash_title">داشبورد</h2>
+      <div class="grid">
+        <div class="kpi"><span data-i18n="kpi_today">امروز کشیده‌ای</span><b id="todayCount">0</b></div>
+        <div class="kpi"><span data-i18n="kpi_avg7">میانگین ۷ روز</span><b id="avg7">0</b></div>
+        <div class="kpi"><span data-i18n="kpi_reduction">کاهش نسبت به پایه</span><b id="reductionPct">0%</b></div>
+        <div class="kpi"><span data-i18n="kpi_money">پول ذخیره‌شده</span><b id="moneySaved">0</b></div>
+      </div>
+      <label><span data-i18n="price_label">قیمت هر نخ (تخمینی به تومان/یورو)</span>
+        <input id="pricePerCig" type="number" min="0" step="0.01" value="0.5">
+      </label>
+      <div class="actions">
+        <button id="exportJson" data-i18n="btn_export">خروجی JSON</button>
+        <label class="importLabel">
+          <input type="file" id="importJson" accept="application/json" class="hidden-input">
+          <span class="btn" data-i18n="btn_import">ورودی JSON</span>
+        </label>
+        <button id="resetApp" class="danger" data-i18n="btn_reset">شروع از اول</button>
+      </div>
+    </section>
+
+    <section id="history" class="card hidden">
+      <h2 data-i18n="hist_title">تاریخچهٔ روزانه</h2>
+      <div id="historyList" class="list"></div>
+    </section>
+
+    <section id="profile" class="card hidden">
+      <h2 data-i18n="prof_title">پروفایل</h2>
+
+      <div class="card inner">
+        <h3 data-i18n="user_card">اطلاعات کاربر</h3>
+        <div class="two-col">
+          <div><span data-i18n="user_name">نام</span>: <b id="pName">—</b></div>
+          <div><span data-i18n="user_lang">زبان</span>: <b id="pLang">—</b></div>
+          <div><span data-i18n="user_created">تاریخ ساخت</span>: <b id="pCreated">—</b></div>
+        </div>
+        <div class="actions">
+          <button id="editAccount" data-i18n="edit_account">ویرایش حساب</button>
+          <button id="resetProfile" class="danger" data-i18n="reset_profile">حذف/ریست پروفایل</button>
+        </div>
+      </div>
+
+      <div class="card inner">
+        <h3 data-i18n="plan_card">برنامه ترک</h3>
+        <div class="two-col">
+          <div><span data-i18n="plan_baseline">پایه (نخ/روز)</span>: <b id="pBaseline">—</b></div>
+          <div><span data-i18n="plan_wake">ساعت بیداری</span>: <b id="pWake">—</b></div>
+          <div><span data-i18n="plan_reduce">کاهش هفتگی</span>: <b id="pReduce">—</b>%</div>
+          <div><span data-i18n="plan_phase">فاز فعلی</span>: <b id="pPhase">—</b></div>
+          <div><span data-i18n="plan_interval">فاصله هدف فعلی</span>: <b id="pInterval">—</b> <span data-i18n="minutes">دقیقه</span></div>
+          <div><span data-i18n="plan_next_ok">زمان مجاز بعدی</span>: <b id="pNextOk">—</b></div>
+        </div>
+        <div class="actions">
+          <button id="editPlan" data-i18n="edit_plan">ویرایش برنامه</button>
+          <button id="advancePhaseProfile" data-i18n="phase_next">ادامه به فاز بعد</button>
+        </div>
+      </div>
+
+      <div class="card inner">
+        <h3 data-i18n="progress_card">پیشرفت</h3>
+        <div class="two-col">
+          <div><span data-i18n="prog_days">روزهای سپری‌شده از شروع</span>: <b id="pDays">—</b></div>
+          <div><span data-i18n="kpi_today">امروز</span>: <b id="pToday">—</b></div>
+          <div><span data-i18n="kpi_avg7">میانگین ۷ روز</span>: <b id="pAvg7">—</b></div>
+          <div><span data-i18n="kpi_reduction">کاهش</span>: <b id="pRed">—</b></div>
+        </div>
+      </div>
+
+      <div class="card inner">
+        <h3 data-i18n="timeline_card">تایم‌لاین فازها</h3>
+        <div id="phaseTimeline" class="list"></div>
+      </div>
+
+      <div class="card inner">
+        <h3 data-i18n="notif_title">اعلان</h3>
+        <p class="muted" data-i18n="notif_note">اعلان «اجازهٔ سیگار بعدی» فقط وقتی اپ باز باشد کار می‌کند.</p>
+        <button id="enableNotif" data-i18n="notif_enable">فعال‌سازی اعلان</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Overlays -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <div id="signupModal" class="modal hidden">
+    <h2 data-i18n="signup_title">ساخت حساب</h2>
+    <label><span data-i18n="signup_name">نام شما</span>
+      <input id="signupName" type="text" placeholder="">
+    </label>
+    <label><span data-i18n="signup_lang">زبان دلخواه</span>
+      <select id="signupLang">
+        <option value="fa">فارسی</option>
+        <option value="en">English</option>
+      </select>
+    </label>
+    <button id="createAccount" data-i18n="signup_btn">ساخت حساب</button>
+    <p class="muted" data-i18n="signup_note">حساب شما فقط روی همین دستگاه ذخیره می‌شود و نیاز به ورود مجدد نیست.</p>
+  </div>
+
+  <div id="onboardingModal" class="modal hidden">
+    <h2 data-i18n="onb_title">شروع شخصی‌سازی</h2>
+    <label><span data-i18n="onb_baseline">چند نخ در روز می‌کشی؟</span> <input id="baseline" type="number" min="1" value="20"></label>
+    <label><span data-i18n="onb_wake">ساعت بیداری در روز؟</span> <input id="wake" type="number" min="8" max="20" value="16"></label>
+    <label><span data-i18n="onb_reduce">کاهش هفتگی (%)</span> <input id="reduce" type="number" min="3" max="15" value="8"></label>
+    <div class="actions">
+      <button id="autoPlanBtn" class="ghost" data-i18n="autoplan_btn">محاسبه برنامه</button>
+      <select id="pace">
+        <option value="easy" data-i18n="mode_easy">آهسته (۱۲ هفته)</option>
+        <option value="normal" data-i18n="mode_normal" selected>نرمال (۸ هفته)</option>
+        <option value="fast" data-i18n="mode_fast">سریع (۵ هفته)</option>
+      </select>
+    </div>
+    <button id="startPlan" data-i18n="onb_start">شروع برنامه</button>
+  </div>
+
+  <footer>
+    <button id="installBtn" class="hidden" data-i18n="btn_install">نصب روی Home Screen</button>
+    <p class="footnote">v4b — <span data-i18n="footnote">نسخه آزمایشی – داده‌ها فقط روی این دستگاه ذخیره می‌شود.</span></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
